@@ -1,6 +1,9 @@
 const students = [];
 const tableBody = document.querySelector('#studentsTable tbody');
 const averageDiv = document.getElementById('average');
+const totalSpan = document.getElementById('totalStudents');
+const passedSpan = document.getElementById('passedCount');
+const failedSpan = document.getElementById('failedCount');
 const form = document.getElementById('studentForm');
 const nameInput = document.getElementById('name');
 const lastNameInput = document.getElementById('lastName');
@@ -110,13 +113,24 @@ function deleteEstudiante(index) {
   calculateAverage();
 }
 
-// Calcula y muestra el promedio general
+// Calcula y muestra el promedio general y estadísticas
 function calculateAverage() {
   if (students.length === 0) {
     averageDiv.textContent = 'Promedio de Calificaciones: No Disponible';
+    updateStats();
     return;
   }
-  const total = students.reduce((sum, s) => sum + s.grade, 0);
-  const avg = total / students.length;
+  const avg = students.reduce((sum, s) => sum + s.grade, 0) / students.length;
   averageDiv.textContent = `Promedio de Calificaciones: ${avg.toFixed(2)}`;
+  updateStats();
+}
+
+// Calcula y muestra estadísticas adicionales
+function updateStats() {
+  const totalCount = students.length;
+  const passedCount = students.filter(s => s.grade >= 4.0).length;
+  const failedCount = totalCount - passedCount;
+  totalSpan.textContent = totalCount;
+  passedSpan.textContent = passedCount;
+  failedSpan.textContent = failedCount;
 }
