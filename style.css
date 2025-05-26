@@ -1,3 +1,8 @@
+:root {
+  --primary-color: #40E0D0;
+  --primary-hover: #30b8b0;
+}
+
 /* Contenedor principal */
 .container {
   max-width: 600px;
@@ -10,27 +15,45 @@
 h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #04167c;
+  color: var(--primary-color);
   font-weight: bold;
 }
 
 /* Promedio */
 #average {
   text-align: center;
-  border: 2px solid #04167c;
+  border: 2px solid var(--primary-color);
   padding: 12px;
   border-radius: 4px;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #04167c;
+  color: var(--primary-color);
   background-color: #f8f9fa;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabla de estadísticas */
+#statsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#statsTable th,
+#statsTable td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+#statsTable th {
+  background-color: #f2f2f2;
+  font-weight: 600;
 }
 
 /* Formulario */
 form {
-  border: 2px solid #04167c;
+  border: 2px solid var(--primary-color);
   border-radius: 8px;
   padding: 20px;
   background-color: #fff;
@@ -40,7 +63,6 @@ form {
 
 .form-group {
   margin-bottom: 15px;
-  position: relative;
 }
 
 label {
@@ -53,7 +75,7 @@ label {
 input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #04167c;
+  border: 1px solid var(--primary-color);
   border-radius: 4px;
   font-size: 1rem;
   box-sizing: border-box;
@@ -61,8 +83,8 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #0056b3;
-  box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.1);
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 0 2px rgba(48, 184, 176, 0.3);
 }
 
 /* Mensaje de error */
@@ -70,7 +92,6 @@ input:invalid {
   border-color: #ff6b6b;
 }
 
-/* Texto para los campos */
 .hint {
   font-size: 0.8rem;
   color: #666;
@@ -78,18 +99,9 @@ input:invalid {
   font-style: italic;
 }
 
-/* Mensaje de error */
-.error-message {
-  color: #ff6b6b;
-  font-size: 0.9rem;
-  margin-top: 5px;
-  display: none;
-}
-
 /* Botón */
 button {
-  display: block;
-  background-color: #04167c;
+  background-color: var(--primary-color);
   color: #fff;
   border: none;
   padding: 12px 20px;
@@ -97,96 +109,53 @@ button {
   font-size: 1rem;
   cursor: pointer;
   margin-top: 15px;
-  width: auto;
-  text-align: center;
-  font-weight: 500;
   transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-hover);
 }
 
-/* Tabla */
+/* Tabla general */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 24px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-th, td {
+th,
+td {
   padding: 12px 15px;
   border: 1px solid #ddd;
   text-align: left;
 }
-
 th {
   background-color: #f2f2f2;
   font-weight: 600;
   color: #333;
 }
-
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }
-
 tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Responsive (formatos ipad, celular, pc) */
+/* Responsive */
 @media (max-width: 768px) {
-  .container {
-    width: 95%;
-    padding: 15px;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-  }
-  
-  #average {
-    font-size: 1.1rem;
-    padding: 10px;
-  }
-  
-  form {
-    padding: 15px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 10px;
-  }
-  
-  table {
-    font-size: 0.9rem;
-  }
-  
-  th, td {
-    padding: 8px 10px;
-  }
+  .container { width: 95%; padding: 15px; }
+  h2 { font-size: 1.5rem; }
+  #average { font-size: 1.1rem; padding: 10px; }
+  form { padding: 15px; }
+  button { width: 100%; padding: 10px; }
+  table { font-size: 0.9rem; }
+  th, td { padding: 8px 10px; }
 }
 
 @media (max-width: 480px) {
-  h2 {
-    font-size: 1.3rem;
-  }
-  
-  #average {
-    font-size: 1rem;
-  }
-  
-  input, button {
-    padding: 8px;
-  }
-  
-  table {
-    font-size: 0.8rem;
-  }
-  
-  th, td {
-    padding: 6px 8px;
-  }
+  h2 { font-size: 1.3rem; }
+  #average { font-size: 1rem; }
+  input, button { padding: 8px; }
+  table { font-size: 0.8rem; }
+  th, td { padding: 6px 8px; }
 }
