@@ -2,124 +2,121 @@ const students = [];
 const tableBody = document.querySelector('#studentsTable tbody');
 const averageDiv = document.getElementById('average');
 const form = document.getElementById('studentForm');
-
-// campos del formulario
 const nameInput = document.getElementById('name');
 const lastNameInput = document.getElementById('lastName');
 const gradeInput = document.getElementById('grade');
+const editIndexInput = document.getElementById('editIndex');
+const submitBtn = document.getElementById('submitBtn');
 
-// Función para validar la calificación
+// Valida que la nota esté entre 1.0 y 7.0
+defineGradePattern = /^([1-6](\.[0-9])?|7(\.0)?)$/;
 function validateGrade(value) {
-  // numeros entre 1.0 y 7.0
-  const gradePattern = /^([1-6](\.[0-9])?|7(\.0)?)$/;
-  return gradePattern.test(value);
+  return defineGradePattern.test(value);
 }
 
-// restricciones de entrada
-gradeInput.addEventListener('input', function() {
-  // solo numeros y punto como decimal (no comas)
-  this.value = this.value.replace(/[^0-9.]/g, '');
-  
-
-  const parts = this.value.split('.');
+// Restricciones de entrada para grade
+gradeInput.addEventListener('input', () => {
+  gradeInput.value = gradeInput.value.replace(/[^0-9.]/g, '');
+  const parts = gradeInput.value.split('.');
   if (parts.length > 2) {
-    this.value = parts[0] + '.' + parts.slice(1).join('');
+    gradeInput.value = parts[0] + '.' + parts.slice(1).join('');
   }
-  
-  // decimales
-  if (parts.length > 1 && parts[1].length > 1) {
-    this.value = parts[0] + '.' + parts[1].charAt(0);
+  if (parts[1] && parts[1].length > 1) {
+    gradeInput.value = parts[0] + '.' + parts[1].charAt(0);
   }
-  
-  // validacion del rango
-  if (this.value !== '' && !validateGrade(this.value)) {
-    this.setCustomValidity('La calificación debe estar entre 1.0 y 7.0.');
-  } else {
-    this.setCustomValidity('');
-  }
-});
-
-// cant letras
-nameInput.addEventListener('input', function() {
-  // solo letras
-  this.value = this.value.replace(/[^A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
-  
-  // cant caracteres
-  if (this.value.length > 25) {
-    this.value = this.value.substring(0, 25);
-  }
-  
-  this.setCustomValidity('');
-});
-
-// letras y 25caracteres
-lastNameInput.addEventListener('input', function() {
-  // solo letras
-  this.value = this.value.replace(/[^A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
-  
-  //limitamos la longitud de los caracteres
-  if (this.value.length > 25) {
-    this.value = this.value.substring(0, 25);
-  }
-  
-  this.setCustomValidity('');
-});
-
-// envio del formulario
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-
-
-  if (!nameInput.checkValidity()) {
-    nameInput.reportValidity();
-    return;
-  }
-  
-  if (!lastNameInput.checkValidity()) {
-    lastNameInput.reportValidity();
-    return;
-  }
-  
-  // Validación manual
-  if (!validateGrade(gradeInput.value)) {
+  if (gradeInput.value && !validateGrade(gradeInput.value)) {
     gradeInput.setCustomValidity('La calificación debe estar entre 1.0 y 7.0.');
-    gradeInput.reportValidity();
-    return;
   } else {
     gradeInput.setCustomValidity('');
   }
+});
 
-  // Si todo es valido
-  const student = {
+// Sólo letras para nombre y apellido
+[nameInput, lastNameInput].forEach(input => {
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^A-Za-záéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
+    if (input.value.length > 25) {
+      input.value = input.value.substring(0, 25);
+    }
+    input.setCustomValidity('');
+  });
+});
+
+// Envío del formulario (agregar o actualizar)
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  if (!nameInput.checkValidity()) { nameInput.reportValidity(); return; }
+  if (!lastNameInput.checkValidity()) { lastNameInput.reportValidity(); return; }
+  if (!validateGrade(gradeInput.value)) { gradeInput.setCustomValidity('La calificación debe estar entre 1.0 y 7.0.'); gradeInput.reportValidity(); return; }
+  else { gradeInput.setCustomValidity(''); }
+
+  const studentData = {
     name: nameInput.value.trim(),
     lastName: lastNameInput.value.trim(),
     grade: parseFloat(gradeInput.value)
   };
-  students.push(student);
-  addStudentToTable(student);
-  calculateAverage();
 
+  const idx = editIndexInput.value;
+  if (idx === '') {
+    // Modo agregar
+    students.push(studentData);
+  } else {
+    // Modo edición
+    students[idx] = studentData;
+    editIndexInput.value = '';
+    submitBtn.textContent = 'Agregar Estudiante';
+  }
+
+  renderTable();
+  calculateAverage();
   form.reset();
 });
 
-function addStudentToTable(student) {
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>${student.name}</td>
-    <td>${student.lastName}</td>
-    <td>${student.grade.toFixed(1)}</td>
-  `;
-  tableBody.appendChild(row);
+// Renderiza la tabla completa
+function renderTable() {
+  tableBody.innerHTML = '';
+  students.forEach((student, i) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${student.name}</td>
+      <td>${student.lastName}</td>
+      <td>${student.grade.toFixed(1)}</td>
+      <td>
+        <button class="edit-btn">Editar</button>
+        <button class="delete-btn">Eliminar</button>
+      </td>
+    `;
+    row.querySelector('.edit-btn').addEventListener('click', () => loadStudentForEdit(i));
+    row.querySelector('.delete-btn').addEventListener('click', () => deleteEstudiante(i));
+    tableBody.appendChild(row);
+  });
 }
 
-function calculateAverage() {
+// Carga datos para editar
+function loadStudentForEdit(index) {
+  const s = students[index];
+  nameInput.value = s.name;
+  lastNameInput.value = s.lastName;
+  gradeInput.value = s.grade.toFixed(1);
+  editIndexInput.value = index;
+  submitBtn.textContent = 'Actualizar Alumno';
+}
+
+// Elimina un estudiante
+def deleteEstudiante(index) {
+  students.splice(index, 1);
+  renderTable();
+  calculateAverage();
+}
+
+// Calcula promedio
+def calculateAverage() {
   if (students.length === 0) {
     averageDiv.textContent = 'Promedio de Calificaciones: No Disponible';
     return;
   }
   const total = students.reduce((sum, s) => sum + s.grade, 0);
   const avg = total / students.length;
-  
-  // Actualizar el promedio
   averageDiv.textContent = `Promedio de Calificaciones: ${avg.toFixed(2)}`;
 }

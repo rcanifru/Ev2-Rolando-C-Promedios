@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -58,7 +59,11 @@
           oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.setCustomValidity('')"
         >
       </div>
-      <button type="submit">Agregar Estudiante</button>
+
+      <!-- Campo oculto para índice de edición -->
+      <input type="hidden" id="editIndex" value="">
+      
+      <button type="submit" id="submitBtn">Agregar Estudiante</button>
     </form>
 
     <!-- Tabla de estudiantes -->
@@ -68,6 +73,7 @@
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Calificación</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
