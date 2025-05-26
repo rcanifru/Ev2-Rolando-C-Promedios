@@ -1,4 +1,3 @@
-<!-- script.js -->
 const students = [];
 const tableBody = document.querySelector('#studentsTable tbody');
 const averageDiv = document.getElementById('average');
